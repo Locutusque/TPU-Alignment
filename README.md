@@ -17,5 +17,5 @@ I'm open to contributions that propose additional model architectures.
 1. Head on over to Kaggle, make sure you have verified your account with a phone number, and create a new notebook. Select TPU VM v3-8 as the accelerator.
 2. Upload the ```spmd_util.py``` file to the input data
 3. Import the notebook ```fully-finetune-large-models-for-free.ipynb``` into the kaggle notebook.
-4. Modify the notebook to your needs. Make sure to provide your write access token in the Kaggle secrets.
+4. Modify the notebook to your needs. Make sure to provide your hugging face write access token in the Kaggle secrets.
 5. Click save version, then select "save and run all". Make sure the training run does not run longer than 9 hours or the process will be killed!
