@@ -92,6 +92,7 @@ MIXTRAL_RULES = (
     ("w1", ("fsdp", "mp")),
     ("w2", ("mp", "fsdp")),
     ("w3", ("fsdp", "mp")),
+    ("gate", ("mp", "fsdp")),
     ("lm_head", ("fsdp", "mp")),
     )
     
