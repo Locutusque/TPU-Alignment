@@ -4,7 +4,7 @@ import re
 import torch_xla.experimental.xla_sharding as xs
 import torch_xla.core.xla_model as xm
 from transformers import (
-    GPTNeoXConfig, T5Config, LlamaConfig, GPT2Config, MistralConfig, Qwen2Config
+    GPTNeoXConfig, T5Config, LlamaConfig, GPT2Config, MistralConfig, Qwen2Config, MixtralConfig
 )
 
 # ends with $ to prevent sharding lora parameters
@@ -85,6 +85,15 @@ MISTRAL_RULES = (
     ("mlp\\.up_proj", ("fsdp", "mp")),
     ("lm_head", ("fsdp", "mp")),
     )
+MIXTRAL_RULES = (
+    ("model\\.embed_tokens", ("mp", "fsdp")),
+    ("self_attn\\.(q_proj|k_proj|v_proj)", ("fsdp", "mp")),
+    ("self_attn\\.o_proj", ("mp", "fsdp")),
+    ("w1", ("fsdp", "mp")),
+    ("w2", ("mp", "fsdp")),
+    ("w3", ("fsdp", "mp")),
+    ("lm_head", ("fsdp", "mp")),
+    )
     
 ALL_RULES = [
     (GPTNeoXConfig, GPTNEOX_RULES),
@@ -92,7 +101,8 @@ ALL_RULES = [
     (LlamaConfig, LLAMA_RULES),
     (GPT2Config, GPT2_RULES),
     (MistralConfig, MISTRAL_RULES),
-    (Qwen2Config, QWEN_RULES)
+    (Qwen2Config, QWEN_RULES),
+    (MixtralConfig, MIXTRAL_RULES)
 ]
 
 def find_rule(model):
