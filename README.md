@@ -10,6 +10,7 @@ Not every model architecture is supported by this code, here's a complete list o
 - gptneox
 - qwen2
 - t5
+- mixtral (untested but should work)
 
 I'm open to contributions that propose additional model architectures.
 
