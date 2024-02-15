@@ -19,3 +19,17 @@ I'm open to contributions that propose additional model architectures.
 1. Head on over to Kaggle, make sure you have verified your account with a phone number, and create a new notebook. Select TPU VM v3-8 as the accelerator.
 2. Import the notebook ```Fine-Tuning LLM on TPU.ipynb``` into the kaggle notebook.
 3. Modify the notebook to your needs. Make sure to provide your hugging face write access token in the Kaggle secrets.
+
+
+## Wandb Support
+
+Model:Phi2
+
+
+Dataset:- Magicoder-oss-instruct
+
+
+Effective batch size = 64(8*8)
+
+
+![image](https://github.com/IsNoobgrammer/TPU-Alignment/assets/112808251/cffd34e0-f9eb-4f69-9c37-f0f1d59f1b11)
