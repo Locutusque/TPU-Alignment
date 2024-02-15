@@ -4,22 +4,11 @@ import re
 import torch_xla.experimental.xla_sharding as xs
 import torch_xla.core.xla_model as xm
 from transformers import (
-    GPTNeoXConfig, T5Config, LlamaConfig, GPT2Config, MistralConfig, Qwen2Config, MixtralConfig
+    GPTNeoXConfig, T5Config, LlamaConfig, GPT2Config, MistralConfig, Qwen2Config, MixtralConfig, PhiConfig
 )
 
 # ends with $ to prevent sharding lora parameters
-GPTNEOX_RULES = (
-    # embeddings
-    ("gpt_neox\\.embed_in", ("mp", "fsdp")),
-    # atention
-    ("attention\\.query_key_value$", ("fsdp", "mp")),
-    ("attention\\.dense$", ("mp", "fsdp")),
-    # mlp
-    ("mlp\\.dense_h_to_4h$", ("fsdp", "mp")),
-    ("mlp\\.dense_4h_to_h$", ("mp", "fsdp")),
-    # output
-    ("embed_out", ("fsdp", "mp")),
-)
+
 
 T5_RULES = (
     # embeddings
@@ -42,15 +31,6 @@ T5_RULES = (
     ("lm_head", ("fsdp", "mp")),
 )
 
-LLAMA_RULES = (
-    ("model\\.embed_tokens", ("mp", "fsdp")),
-    ("self_attn\\.(q_proj|k_proj|v_proj)", ("fsdp", "mp")),
-    ("self_attn\\.o_proj", ("mp", "fsdp")),
-    ("mlp\\.gate_proj", ("fsdp", "mp")),
-    ("mlp\\.down_proj", ("mp", "fsdp")),
-    ("mlp\\.up_proj", ("fsdp", "mp")),
-    ("lm_head", ("fsdp", "mp")),
-    )
 QWEN_RULES = (
     ("model\\.embed_tokens", ("mp", "fsdp")),
     ("self_attn\\.(q_proj|k_proj|v_proj)", ("fsdp", "mp")),
@@ -85,6 +65,44 @@ MISTRAL_RULES = (
     ("mlp\\.up_proj", ("fsdp", "mp")),
     ("lm_head", ("fsdp", "mp")),
     )
+
+
+PHI_RULES = (
+    ### (regex) linear modules, (list[sharding methods]) )
+    ("model\\.embed_tokens", ("mp", "fsdp")),
+    ("self_attn\\.(q_proj|k_proj|v_proj)", ("fsdp", "mp")),
+    ("self_attn\\.dense", ("mp", "fsdp")),
+    ("mlp\\.fc2", ("mp", "fsdp")),  
+    ("mlp\\.fc1", ("fsdp", "mp")),
+    ("lm_head", ("fsdp", "mp")),
+    
+)
+
+LLAMA_RULES = (
+    ("model\\.embed_tokens", ("mp", "fsdp")),
+    ("self_attn\\.(q_proj|k_proj|v_proj)", ("fsdp", "mp")),
+    ("self_attn\\.o_proj", ("mp", "fsdp")),
+    ("mlp\\.gate_proj", ("fsdp", "mp")),
+    ("mlp\\.down_proj", ("mp", "fsdp")),
+    ("mlp\\.up_proj", ("fsdp", "mp")),
+    ("lm_head", ("fsdp", "mp")),
+    )
+
+GPTNEOX_RULES = (
+    # embeddings
+    ("gpt_neox\\.embed_in", ("mp", "fsdp")),
+    # atention
+    ("attention\\.query_key_value$", ("fsdp", "mp")),
+    ("attention\\.dense$", ("mp", "fsdp")),
+    # mlp
+    ("mlp\\.dense_h_to_4h$", ("fsdp", "mp")),
+    ("mlp\\.dense_4h_to_h$", ("mp", "fsdp")),
+    # output
+    ("embed_out", ("fsdp", "mp")),
+)
+
+
+
 MIXTRAL_RULES = (
     ("model\\.embed_tokens", ("mp", "fsdp")),
     ("self_attn\\.(q_proj|k_proj|v_proj)", ("fsdp", "mp")),
@@ -95,6 +113,8 @@ MIXTRAL_RULES = (
     ("gate", ("mp", "fsdp")),
     ("lm_head", ("fsdp", "mp")),
     )
+
+
     
 ALL_RULES = [
     (GPTNeoXConfig, GPTNEOX_RULES),
@@ -103,7 +123,8 @@ ALL_RULES = [
     (GPT2Config, GPT2_RULES),
     (MistralConfig, MISTRAL_RULES),
     (Qwen2Config, QWEN_RULES),
-    (MixtralConfig, MIXTRAL_RULES)
+    (MixtralConfig, MIXTRAL_RULES),
+    (PhiConfig,PHI_RULES),
 ]
 
 def find_rule(model):
