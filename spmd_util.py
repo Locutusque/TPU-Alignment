@@ -54,7 +54,7 @@ GPT2_RULES = (
     ("c_proj", ("mp", "fsdp")),
     
     # output 
-    ("ln_f", ("fsdp", "mp")),
+    ("lm_head", ("fsdp", "mp")),
 )
 MISTRAL_RULES = (
     ("model\\.embed_tokens", ("mp", "fsdp")),
